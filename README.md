@@ -1,5 +1,5 @@
 # API FastAPI - Gestion d'Équipements Réseau avec Authentification JWT
-
+https://github.com/aguacero7/SysMonAPI
 API REST sécurisée pour la gestion et la supervision d'ordinateurs et de routeurs réseau avec support SSH et authentification JWT.
 
 ## Fonctionnalités
@@ -101,4 +101,4 @@ TD-FASTAPI/
 
 L'environnement de test est un docker compose qui nous met à disposition un routeur ainsi que 2 serveurs,
 L'infra est définie dans `docker-compose.yml`, le Dockerfile du routeur est disponible dans Dockerfile.router.
-
+Par défaut, on va communiquer avec une BDD Postgresql
