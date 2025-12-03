@@ -1,0 +1,78 @@
+FROM debian:bookworm-slim
+
+LABEL maintainer="Network Admin"
+LABEL description="Router with FRRouting, SNMPD, NTPD and SSH"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg2 \
+    apt-transport-https \
+    ca-certificates \
+    lsb-release \
+    iproute2 \
+    iputils-ping \
+    traceroute \
+    net-tools \
+    tcpdump \
+    vim \
+    procps \
+    openssh-server \
+    snmpd \
+    snmp \
+    chrony \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -s https://deb.frrouting.org/frr/keys.gpg | tee /usr/share/keyrings/frrouting.gpg > /dev/null && \
+    echo "deb [signed-by=/usr/share/keyrings/frrouting.gpg] https://deb.frrouting.org/frr $(lsb_release -s -c) frr-stable" | tee /etc/apt/sources.list.d/frr.list && \
+    apt-get update && \
+    apt-get install -y frr frr-pythontools && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /var/run/sshd && \
+    mkdir -p /root/.ssh && \
+    chmod 700 /root/.ssh && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    echo 'root:routerpass123' | chpasswd
+
+#démons FRRouting
+RUN sed -i 's/^bgpd=no/bgpd=yes/' /etc/frr/daemons && \
+    sed -i 's/^ospfd=no/ospfd=yes/' /etc/frr/daemons && \
+    sed -i 's/^ripd=no/ripd=yes/' /etc/frr/daemons && \
+    sed -i 's/^zebra=no/zebra=yes/' /etc/frr/daemons
+
+RUN mkdir -p /var/log/frr /var/run/frr /etc/frr && \
+    chown -R frr:frr /var/log/frr /var/run/frr /etc/frr && \
+    chmod 755 /etc/frr
+
+# activer le forwarding IP
+RUN echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf && \
+    echo "net.ipv6.conf.all.forwarding=0" >> /etc/sysctl.conf
+
+# configuration SNMPD
+COPY config/snmpd.conf /etc/snmp/snmpd.conf
+
+# configuration Chrony (NTP)
+COPY config/chrony.conf /etc/chrony/chrony.conf
+
+# configuration FRRouting
+COPY frr-config/frr.conf /etc/frr/frr.conf
+RUN chown frr:frr /etc/frr/frr.conf && chmod 640 /etc/frr/frr.conf
+
+# configuration de vtysh
+COPY config/vtysh.conf /etc/frr/vtysh.conf
+RUN chown frr:frrvty /etc/frr/vtysh.conf && chmod 640 /etc/frr/vtysh.conf
+
+COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+COPY config/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+
+EXPOSE 22 123/udp 161/udp 179 2601 2605 
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

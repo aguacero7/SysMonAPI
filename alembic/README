@@ -1,0 +1,28 @@
+Generic single-database configuration for Alembic with SQLModel.
+
+## Commandes de base
+
+### Créer une nouvelle migration automatique
+```bash
+alembic revision --autogenerate -m "Description de la migration"
+```
+
+### Appliquer toutes les migrations
+```bash
+alembic upgrade head
+```
+
+### Revenir à la migration précédente
+```bash
+alembic downgrade -1
+```
+
+### Voir l'historique des migrations
+```bash
+alembic history
+```
+
+### Voir le statut actuel
+```bash
+alembic current
+```

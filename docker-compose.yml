@@ -1,0 +1,116 @@
+version: '3.8'
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.230.0.0/24
+services:
+  database:
+    image: postgres:16-alpine
+    container_name: dbapi
+    environment:
+      POSTGRES_PASSWORD: mdpsecret
+      POSTGRES_DB: apidb
+      POSTGRES_USER: user
+    volumes:
+      - pdb-data:/var/lib/postgresql/data
+    networks:
+      app-network:
+        ipv4_address: 172.230.0.2
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d apidb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fastapi-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://user:mdpsecret@database:5432/apidb
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      app-network:
+        ipv4_address: 172.230.0.3
+    restart: unless-stopped 
+
+  test-server-1:
+    image: python:3.11-slim
+    container_name: test-server-1
+    hostname: test-server-1
+    networks:
+      app-network:
+        ipv4_address: 172.230.0.10
+    command: >
+      bash -c "apt-get update &&
+               apt-get install -y openssh-server procps &&
+               mkdir -p /var/run/sshd &&
+               echo 'root:testpass123' | chpasswd &&
+               sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config &&
+               service ssh start &&
+               tail -f /dev/null"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+
+  test-server-2:
+    image: python:3.11-slim
+    container_name: test-server-2
+    hostname: test-server-2
+    networks:
+      app-network:
+        ipv4_address: 172.230.0.11
+    command: >
+      bash -c "apt-get update &&
+               apt-get install -y openssh-server procps &&
+               mkdir -p /var/run/sshd &&
+               echo 'root:testpass123' | chpasswd &&
+               sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config &&
+               service ssh start &&
+               tail -f /dev/null"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  router:
+    image: aguacero7/frr-router:latest
+    container_name: router
+    hostname: test-router-1
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - NET_RAW
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv6.conf.all.forwarding=0
+    networks:
+      app-network:
+        ipv4_address: 172.230.0.20
+    volumes:
+      - ./frr-config/frr.conf:/etc/frr/frr.conf
+      - ./frr-config/vtysh.conf:/etc/frr/vtysh.conf
+      - ./config/snmpd.conf:/etc/snmp/snmpd.conf
+      - ./config/chrony.conf:/etc/chrony/chrony.conf
+    restart: unless-stopped
+      
+volumes:
+  pdb-data:
+  app-data:
+  frr-config:
+
