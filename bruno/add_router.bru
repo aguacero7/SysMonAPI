@@ -1,0 +1,33 @@
+meta {
+  name: add router
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{baseUrl}}/routers
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "mac": "AA:BB:CC:DD:EE:DF",
+    "ip": "172.230.0.25",
+    "hostname": "router1",
+    "type_equipement": "router",
+    "status": 1,
+    "bgp_enabled": true,
+    "rip_enabled": true,
+    "ospf_enabled": true,
+    "ssh_hostname":"172.230.0.20",
+    "ssh_username": "root",
+    "ssh_password": "routerpass123",
+    "ssh_port": 22
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

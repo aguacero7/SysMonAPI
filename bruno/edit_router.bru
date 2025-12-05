@@ -1,0 +1,33 @@
+meta {
+  name: edit router
+  type: http
+  seq: 22
+}
+
+put {
+  url: {{baseUrl}}/routers/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "mac": "AA:BB:CC:DD:EE:FF",
+    "ip": "192.168.1.1",
+    "hostname": "router01-updated",
+    "status": "1",
+    "frrouting_version": "8.1",
+    "bgp_enabled": true,
+    "ospf_enabled": true,
+    "rip_enabled": false,
+    "ssh_hostname": "192.168.1.1",
+    "ssh_username": "admin",
+    "ssh_password": "routerpass",
+    "ssh_port": 22
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

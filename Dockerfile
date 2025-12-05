@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y \
     net-tools \
     openssh-client \
     curl \
+    gcc \
+    libsnmp-dev \
+    snmp \
     && curl -L https://github.com/aguacero7/rkik/releases/download/v1.2.1/rkik-linux-x86_64 -o /usr/local/bin/rkik \
     && chmod +x /usr/local/bin/rkik \
     && rm -rf /var/lib/apt/lists/*

@@ -1,0 +1,16 @@
+meta {
+  name: get routing table
+  type: http
+  seq: 24
+}
+
+get {
+  url: http://localhost:8000/routers/7/routing_table
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

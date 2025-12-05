@@ -1,0 +1,16 @@
+meta {
+  name: cpu load
+  type: http
+  seq: 15
+}
+
+get {
+  url: http://localhost:8000/ordinateurs/6/cpu_load
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

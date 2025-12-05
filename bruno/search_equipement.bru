@@ -1,0 +1,20 @@
+meta {
+  name: search equipement by ip
+  type: http
+  seq: 16
+}
+
+get {
+  url: http://localhost:8000/equipements/search?ip=172.230.0.15
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ip: 172.230.0.15
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

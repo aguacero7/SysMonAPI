@@ -1,0 +1,30 @@
+meta {
+  name: add ordinateur
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/ordinateurs
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "mac": "A1:B2:C3:D4:E6:E6",
+    "ip": "172.230.0.29",
+    "taille_disque": 512,
+    "os": "linux",
+    "status": 1,
+    "ram": 16.0,
+    "ssh_username": "root",
+    "ssh_password": "testpass123",
+    "ssh_port": 22
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

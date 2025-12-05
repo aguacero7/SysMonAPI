@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "td-java",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

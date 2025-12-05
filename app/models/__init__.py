@@ -3,6 +3,8 @@ from .ssh_connection import SSHConnection
 from .equipement import EquipementBase
 from .ordinateur import Ordinateur
 from .router import Router
+from .snmp_metric import SNMPMetric
+from .user import User
 
 __all__ = [
     "ComputerStatus",
@@ -10,5 +12,7 @@ __all__ = [
     "SSHConnection",
     "EquipementBase",
     "Ordinateur",
-    "Router"
+    "Router",
+    "SNMPMetric",
+    "User"
 ]

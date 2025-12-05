@@ -1,0 +1,16 @@
+meta {
+  name: Dashboard SNMP Routeurs
+  type: http
+  seq: 29
+}
+
+get {
+  url: http://localhost:8000/monitoring/dashboard
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

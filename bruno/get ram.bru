@@ -1,0 +1,16 @@
+meta {
+  name: get ram
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://127.0.0.1:8000/free_memory/192.168.1.1
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

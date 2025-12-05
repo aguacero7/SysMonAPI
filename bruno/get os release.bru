@@ -1,0 +1,16 @@
+meta {
+  name: get os release
+  type: http
+  seq: 19
+}
+
+get {
+  url: http://localhost:8000/os_release/6
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

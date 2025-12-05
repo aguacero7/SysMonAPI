@@ -1,0 +1,27 @@
+meta {
+  name: Login
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8000/auth/login
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  username: admin
+  password: admin
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("authToken", res.body.access_token);
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

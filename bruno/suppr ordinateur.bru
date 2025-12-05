@@ -1,0 +1,16 @@
+meta {
+  name: suppr ordinateur
+  type: http
+  seq: 9
+}
+
+delete {
+  url: http://localhost:8000/delete_ordinateur/192.168.1.1
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

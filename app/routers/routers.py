@@ -1,8 +1,9 @@
 import json
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlmodel import Session, select
-from app.models import Router
+from app.models import Router, SNMPMetric, User
 from app.config.database import get_session
+from app.config.auth import get_current_active_user
 from typing import Optional
 
 router = APIRouter(prefix="/routers", tags=["routers"])
@@ -28,14 +29,23 @@ def get_router(router_id: int, session: Session = Depends(get_session)):
     return router
 
 @router.post("")
-def add_router(router: Router, session: Session = Depends(get_session)):
+def add_router(
+    router: Router,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_active_user)
+):
     session.add(router)
     session.commit()
     session.refresh(router)
     return {"message": "Router added successfully", "id": router.id}
 
 @router.put("/{router_id}")
-def edit_router(router_id: int, router_data: Router, session: Session = Depends(get_session)):
+def edit_router(
+    router_id: int,
+    router_data: Router,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_active_user)
+):
     router = session.get(Router, router_id)
     if not router:
         raise HTTPException(status_code=404, detail="Router not found")
@@ -50,14 +60,30 @@ def edit_router(router_id: int, router_data: Router, session: Session = Depends(
     return {"message": "Router updated successfully", "router": router}
 
 @router.delete("/{router_id}")
-def delete_router(router_id: int, session: Session = Depends(get_session)):
+def delete_router(
+    router_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_active_user)
+):
     router = session.get(Router, router_id)
     if not router:
         raise HTTPException(status_code=404, detail="Router not found")
 
+    # netoyage metrics
+    statement = select(SNMPMetric).where(SNMPMetric.router_id == router_id)
+    metrics = session.exec(statement).all()
+
+    metrics_count = len(metrics)
+    for metric in metrics:
+        session.delete(metric)
+
     session.delete(router)
     session.commit()
-    return {"message": "Router deleted successfully"}
+
+    return {
+        "message": "Router deleted successfully",
+        "metrics_deleted": metrics_count
+    }
 
 @router.get("/{router_id}/routing_table")
 def get_routing_table(router_id: int, session: Session = Depends(get_session)):

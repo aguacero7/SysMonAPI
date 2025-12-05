@@ -1,0 +1,20 @@
+meta {
+  name: SNMP - Router Errors
+  type: http
+  seq: 34
+}
+
+get {
+  url: http://localhost:8000/monitoring/routers/7/errors?hours=24
+  body: none
+  auth: inherit
+}
+
+params:query {
+  hours: 24
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

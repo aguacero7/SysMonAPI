@@ -1,0 +1,16 @@
+meta {
+  name: SNMP - Monitoring Overview
+  type: http
+  seq: 35
+}
+
+get {
+  url: http://localhost:8000/monitoring/overview
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

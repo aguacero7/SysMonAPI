@@ -1,0 +1,20 @@
+meta {
+  name: SNMP - Router Availability
+  type: http
+  seq: 32
+}
+
+get {
+  url: http://localhost:8000/monitoring/routers/7/availability?hours=24
+  body: none
+  auth: inherit
+}
+
+params:query {
+  hours: 24
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
