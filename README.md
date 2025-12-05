@@ -11,6 +11,7 @@ API REST moderne pour la gestion et la supervision complète d'ordinateurs et de
 
 - [Fonctionnalités](#-fonctionnalités)
 - [Architecture](#-architecture)
+- [Tutoriel - Effectuer des tests](#-tutoriel)
 - [Installation](#-installation)
 - [Configuration](#-configuration)
 - [Utilisation](#-utilisation)
@@ -139,7 +140,11 @@ export DATABASE_URL="postgresql+psycopg2://user:password@localhost:5432/apidb"
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+## Tutoriel
+Pour tester l'application, il suffira de simplement lancer le docker compose (voir étape ci-dessus), 
+Puis d'ouvrir dans bruno tous les fichiers .bru présents dans le dossier bruno.
 
+> **Et c'est TOUT !!!**
 ## Configuration
 
 ### Variables d'environnement
@@ -432,9 +437,6 @@ docker compose logs -f fastapi-app
 # Accéder au routeur en SSH
 docker exec -it router vtysh
 
-# Tester SNMP manuellement
-docker exec -it fastapi-app snmpwalk -v2c -c public 172.230.0.20 system
-
 # Redémarrer un service
 docker compose restart fastapi-app
 
@@ -442,7 +444,8 @@ docker compose restart fastapi-app
 docker compose down
 ```
 
-## Problèmes résolus
+## Problèmes rencontrés 
+> Ici une liste des problèmes rencontrés lors du développement de l'application suivis de la manière avec laquelle je l'ai résolu
 
 ### 1. Suppression de routeurs avec métriques SNMP
 
@@ -482,10 +485,6 @@ Une fois l'application lancée, accédez à la documentation interactive :
   - Interface interactive pour tester tous les endpoints
   - Schémas de requêtes/réponses détaillés
 
-- **ReDoc** : http://localhost:8000/redoc
-  - Documentation alternative plus lisible
-  - Idéale pour la consultation
-
 - **Dashboard SNMP** : http://localhost:8000/monitoring/dashboard
   - Interface web de monitoring en temps réel avec graphiques interactifs
   - 3 graphiques Chart.js (camembert, barres, ligne)
@@ -493,15 +492,6 @@ Une fois l'application lancée, accédez à la documentation interactive :
   - Auto-refresh toutes les 60 secondes
   - Responsive et accessible sans authentification
 
-## Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à :
-
-1. Fork le projet
-2. Créer une branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
-3. Commit vos changements (`git commit -m 'Add some AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
 
 ## Licence
 
