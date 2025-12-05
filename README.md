@@ -141,11 +141,9 @@ export DATABASE_URL="postgresql+psycopg2://user:password@localhost:5432/apidb"
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 ## Tutoriel
-Pour tester l'application, il suffira de simplement lancer le docker compose (voir étape ci-dessus), 
-
-Puis d'ouvrir dans bruno tous les fichiers .bru présents dans le dossier bruno.
-
-Dans bruno, il faut bien penser à modifier l'ID de l'équipement qu'on veut requêter, exemple `/ordinateurs/<id>/cpu_load`
+- Pour tester l'application, il suffira de simplement lancer le docker compose (voir étape ci-dessus), 
+- Puis d'ouvrir dans bruno tous les fichiers .bru présents dans le dossier bruno.
+- Dans bruno, il faut bien penser à modifier l'ID de l'équipement qu'on veut requêter, exemple `/ordinateurs/<id>/cpu_load`
 
 > **Et c'est TOUT !!!**
 ## Configuration
